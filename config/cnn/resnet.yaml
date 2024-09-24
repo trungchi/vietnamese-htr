@@ -1,0 +1,5 @@
+cnn:
+  name: resnet
+  args:
+    version: resnet50
+    droplast: 2

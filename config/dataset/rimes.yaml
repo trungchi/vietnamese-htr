@@ -1,0 +1,18 @@
+dataset:
+  name: rimes
+  args:
+
+  scale_height: 32
+  min_width: 25.0
+
+  train:
+    csv: data/RIMES/train.csv
+    image_folder: data/RIMES/training_WR
+
+  validation:
+    csv: data/RIMES/validation.csv
+    image_folder: data/RIMES/testdataset_ICDAR
+
+  test:
+    csv: data/RIMES/test.csv
+    image_folder: data/RIMES/data_test

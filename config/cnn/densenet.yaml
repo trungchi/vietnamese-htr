@@ -1,0 +1,6 @@
+cnn:
+  name: densenet
+  args:
+    version: custom
+    pretrained: False
+    memory_efficient: False

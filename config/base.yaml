@@ -1,0 +1,6 @@
+defaults:
+    vocab: vnondb_vocab
+    dataset: vnondb
+    cnn: resnet
+    lr: 1.e-4
+    save_by: WER # One of CER, WER, Loss
