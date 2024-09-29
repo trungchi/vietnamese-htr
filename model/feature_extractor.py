@@ -4,7 +4,7 @@ import torch.nn.functional as F
 from efficientnet_pytorch import EfficientNet
 
 from collections import OrderedDict
-
+from torchvision.models import ResNet50_Weights
 
 class FE(nn.Module):
     def __init__(self):
@@ -107,7 +107,7 @@ class EfficientNetFE(FE):
 class SqueezeNetFE(FE):
     def __init__(self):
         super().__init__()
-        squeezenet = torchvision.models.squeezenet1_1(pretrained=True)
+        squeezenet = torchvision.models.squeezenet1_1(weights=ResNet50_Weights.DEFAULT)
         self.cnn = squeezenet.features
         self.n_features = 512
 
@@ -205,7 +205,7 @@ class ResnetFE(FE):
 
     def __init__(self, version='resnet50', droplast: int = 0):
         super().__init__()
-        resnet = ResnetFE.version[version](pretrained=True)
+        resnet = ResnetFE.version[version](weights=ResNet50_Weights.DEFAULT)
         self.cnn = nn.Sequential(*list(resnet.children())[:-2-droplast])
         for child in reversed(list(self.cnn[-1][-1].children())):
             if isinstance(child, nn.BatchNorm2d):
@@ -231,7 +231,7 @@ class ResnextFE(FE):
 
     def __init__(self, version='resnext50', droplast: int = 0):
         super().__init__()
-        resnet = ResnextFE.version[version](pretrained=True)
+        resnet = ResnextFE.version[version](weights=ResNet50_Weights.DEFAULT)
         self.cnn = nn.Sequential(*list(resnet.children())[:-2-droplast])
         for child in reversed(list(self.cnn[-1][-1].children())):
             if isinstance(child, nn.BatchNorm2d):

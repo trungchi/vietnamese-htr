@@ -70,17 +70,20 @@ class ModelTF(ModelCE):
         parser.add_argument('--nhead', type=int, default=8)
         parser.add_argument('--dim_feedforward', type=int, default=4096)
         parser.add_argument('--dropout', type=float, default=0.1)
-        parser.add_argument('--encoder_nlayers', type=int, default=0)
-        parser.add_argument('--decoder_nlayers', type=int, default=1)
-        parser.add_argument('--stn', action='store_true', default=False)
-        parser.add_argument('--aspp', action='store_true', default=False)
-        parser.add_argument('--pe_text', action='store_true', default=False)
-        parser.add_argument('--pe_image', action='store_true', default=False)
+        parser.add_argument('--encoder_nlayers', type=int, default=3)
+        parser.add_argument('--decoder_nlayers', type=int, default=3)
+        parser.add_argument('--stn', action='store_true', default=True)
+        parser.add_argument('--aspp', action='store_true', default=True)
+        parser.add_argument('--pe_text', action='store_true', default=True)
+        parser.add_argument('--pe_image', action='store_true', default=True)
         return parser
 
     def __init__(self, config):
         super().__init__(config)
+        print(config)
+        print(config['cnn'])
         self.cnn = initialize(config['cnn'])
+        print(config['vocab'])
         self.vocab = initialize(config['vocab'], add_blank=False)
         self.register_buffer('start_index', torch.tensor(self.vocab.SOS_IDX, dtype=torch.long))
 
@@ -88,6 +91,7 @@ class ModelTF(ModelCE):
         self.Vc = nn.Linear(self.vocab.size, config['attn_size'])
         self.character_distribution = nn.Linear(config['attn_size'], self.vocab.size)
 
+        # 'attn_size': 512, 'nhead': 8, 'dim_feedforward': 4096, 'dropout': 0.1, 'decoder_nlayers': 3
         decoder_layer = TransformerDecoderLayer(config['attn_size'],
                                                 config['nhead'],
                                                 dim_feedforward=config['dim_feedforward'],
@@ -96,6 +100,7 @@ class ModelTF(ModelCE):
         self.decoder = TransformerDecoder(decoder_layer, config['decoder_nlayers'], decoder_norm)
 
         if config.get('encoder_nlayers', 0) > 0:
+            # 'attn_size': 512, 'nhead': 8, 'dim_feedforward': 4096, 'dropout': 0.1, 'encoder_nlayers': 3
             encoder_layer = TransformerEncoderLayer(
                 d_model=config['attn_size'],
                 nhead=config['nhead'],

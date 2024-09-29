@@ -26,7 +26,7 @@ class ModelCE(pl.LightningModule):
     def __init__(self, config):
         super().__init__()
         self.save_hyperparameters('config')
-        self.hparams = config
+        # self.hparams = config
 
         self.transform = ImageTransform(augmentation=config.get('augmentation', True),
                                         scale_height=config['dataset']['scale_height'],
@@ -232,11 +232,14 @@ class ModelCE(pl.LightningModule):
                 'wer_distances': wer_distances,
                 'num_words': num_words}
 
-    def validation_epoch_end(self, outputs):
-        return self._shared_metrics(outputs, 'Validation')
+    # def validation_epoch_end(self, outputs):
+    #     return self._shared_metrics(outputs, 'Validation')
 
-    def test_epoch_end(self, outputs):
-        return self._shared_metrics(outputs, 'Test')
+    # def on_validation_epoch_end(self, outputs):
+    #     return self._shared_metrics(outputs, 'Validation')
+    #
+    # def test_epoch_end(self, outputs):
+    #     return self._shared_metrics(outputs, 'Test')
 
     def _shared_metrics(self, outputs, tag: str):
         cer_distances = torch.cat([x['cer_distances'] for x in outputs], dim=0).sum().float()
@@ -283,6 +286,7 @@ class ModelCE(pl.LightningModule):
             collate_fn=self.collate_fn,
             shuffle=False,
             num_workers=self.config['num_workers'],
+            # num_workers=7,
             pin_memory=True
         )
         return val_loader
@@ -301,11 +305,15 @@ class ModelCE(pl.LightningModule):
         return test_loader
 
     def prepare_dataset(self, partition: str, vocab, config, image_transform):
+        dataset_params = config['dataset'][partition].copy()
+        dataset_params.pop('patch', None)  # Xóa khóa 'patch' nếu nó tồn tại
+        # dataset = HTRDataset(vocab=vocab,
+        #                      image_transform=image_transform,
+        #                      **config['dataset'][partition])
         dataset = HTRDataset(vocab=vocab,
                              image_transform=image_transform,
-                             **config['dataset'][partition])
+                             **dataset_params)
         return dataset
-
     #####################################
     # Inference
     #####################################

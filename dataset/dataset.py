@@ -22,8 +22,9 @@ class HTRDataset(torch.utils.data.Dataset):
             patch_df.iloc[:, 0] = patch_df.iloc[:, 0].astype(str).apply(lambda filename: filename+'.png')
             for id in patch_df['id']:
                 self.df.loc[self.df['id']==id, 'label'] = patch_df.loc[patch_df['id']==id, 'new_label'].values[0]
-        self.df.iloc[:, 0] = self.df.iloc[:, 0].apply(lambda filename: os.path.join(image_folder, filename))
-        self.df.iloc[:, 1] = self.df.iloc[:, 1].astype(str).apply(self.vocab.process_label).apply(self.vocab.add_signals)
+        # self.df.iloc[:, 0] = self.df.iloc[:, 0].apply(lambda filename: os.path.join(image_folder, filename))
+        self.df.iloc[:, 0] = self.df.iloc[:, 1].astype(str).apply(lambda filename: os.path.join(image_folder, filename + '.png'))
+        self.df.iloc[:, 1] = self.df.iloc[:, 2].astype(str).apply(self.vocab.process_label).apply(self.vocab.add_signals)
 
     def __len__(self):
         return len(self.df)
