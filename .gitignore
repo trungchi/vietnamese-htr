@@ -117,3 +117,5 @@ runs/*
 # misc images
 misc/
 lightning_logs/
+
+.idea/*
