@@ -52,7 +52,7 @@ if __name__ == '__main__':
     # Determine if GPU can be used
     use_gpu = torch.cuda.is_available() and args.gpus > 0
     trainer = pl.Trainer(
-        max_epochs=5,
+        max_epochs=1,
         accelerator="gpu" if use_gpu else "cpu",  # Use GPU if available
         devices=args.gpus if use_gpu else 1,      # Set number of devices (GPUs or CPUs)
         deterministic=True,           # Ensure reproducibility

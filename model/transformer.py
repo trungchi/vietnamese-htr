@@ -100,13 +100,13 @@ class Transformer(nn.Module):
 
             Note: Due to the multi-head attention architecture in the transformer model,
             the output sequence length of a transformer is same as the input sequence
-            (i.e. target) length of the decode.
+            (i.e. target) length of the decoded.
 
             where S is the source sequence length, T is the target sequence length, N is the
             batch size, E is the feature number
 
         Examples:
-            >>> output = transformer_model(src, tgt, src_mask=src_mask, tgt_mask=tgt_mask)
+            #>>> output = transformer_model(src, tgt, src_mask=src_mask, tgt_mask=tgt_mask)
         """
 
         if src.size(1) != tgt.size(1):
@@ -241,6 +241,7 @@ class TransformerDecoder(nn.Module):
         attn_weights: Tensor = torch.stack(list_attn_weights, dim=0)  # [L, B, T, S]
 
         return output, (self_weights, attn_weights)
+
 
 class TransformerEncoderLayer(nn.Module):
     r"""TransformerEncoderLayer is made up of self-attn and feedforward network.
@@ -400,6 +401,7 @@ def _get_activation_fn(activation):
         return F.gelu
 
     raise RuntimeError("activation should be relu/gelu, not {}".format(activation))
+
 
 def _reset_parameters(module):
     r"""Initiate parameters in the transformer model."""
